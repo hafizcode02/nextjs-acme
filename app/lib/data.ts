@@ -9,8 +9,7 @@ import {
 import { formatCurrency } from "./utils";
 import { client, query } from "./db-client";
 
-export async function fetchRevenue() {
-  const dbClient = await client.connect();
+export async function fetchRevenue() { // using query approach
   try {
     // Artificially delay a response for demo purposes.
     // Don't do this in production :)
@@ -31,13 +30,10 @@ export async function fetchRevenue() {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch revenue data.");
-  } finally {
-    dbClient.release();
   }
 }
 
-export async function fetchLatestInvoices() {
-  const dbClient = await client.connect();
+export async function fetchLatestInvoices() { // using query approach
   try {
     // const data = await dbClient.query<LatestInvoiceRaw>(`
     //   SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
@@ -68,12 +64,10 @@ export async function fetchLatestInvoices() {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch the latest invoices.");
-  } finally {
-    dbClient.release();
   }
 }
 
-export async function fetchCardData() {
+export async function fetchCardData() { // using dedicated dbClient approach
   const dbClient = await client.connect();
   try {
     // You can probably combine these into a single SQL query
