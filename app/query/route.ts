@@ -1,8 +1,10 @@
 // Sample query to list invoices
 import { client } from "../lib/db-client";
 
+const dbClient = await client.connect();
+
 async function listInvoices() {
-  const data = await client.sql`
+  const data = await dbClient.sql`
     SELECT invoices.amount, customers.name
     FROM invoices
     JOIN customers ON invoices.customer_id = customers.id
@@ -15,7 +17,7 @@ async function listInvoices() {
 export async function GET() {
   return Response.json({
     message:
-      'Uncomment this file and remove this line. You can delete this file when you are finished.',
+      "Uncomment this file and remove this line. You can delete this file when you are finished.",
   });
 
   try {
