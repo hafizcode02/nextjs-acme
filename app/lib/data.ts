@@ -11,16 +11,6 @@ import { client, query } from "./db-client";
 
 export async function fetchRevenue() { // using query approach
   try {
-    // Artificially delay a response for demo purposes.
-    // Don't do this in production :)
-
-    // console.log('Fetching revenue data...');
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
-
-    // const data = await dbClient.query<Revenue>(
-    //   "SELECT * FROM revenue ORDER BY month DESC LIMIT 12"
-    // );
-
     const data = await query<Revenue>(
       `SELECT * FROM revenue ORDER BY month DESC LIMIT 12`,
       []
@@ -35,17 +25,6 @@ export async function fetchRevenue() { // using query approach
 
 export async function fetchLatestInvoices() { // using query approach
   try {
-    // const data = await dbClient.query<LatestInvoiceRaw>(`
-    //   SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
-    //   FROM invoices
-    //   JOIN customers ON invoices.customer_id = customers.id
-    //   ORDER BY invoices.date DESC
-    //   LIMIT 5`);
-
-    // const latestInvoices = data.rows.map((invoice) => ({
-    //   ...invoice,
-    //   amount: formatCurrency(invoice.amount),
-    // }));
 
     const data = await query<LatestInvoiceRaw>(
       `SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id

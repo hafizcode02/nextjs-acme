@@ -9,19 +9,7 @@ import {
   RevenueChartSkeleton,
 } from "@/app/ui/skeletons";
 
-// directly importing the functions from the data file
-// import { fetchCardData, fetchLatestInvoices, fetchRevenue } from "@/app/lib/data";
-
 export default async function Page() {
-  // const revenue = await fetchRevenue();
-  // const latestInvoices = await fetchLatestInvoices();
-
-  // const {
-  //   numberOfInvoices,
-  //   numberOfCustomers,
-  //   totalPaidInvoices,
-  //   totalPendingInvoices,
-  // } = await fetchCardData();
   
   return (
     <main>
@@ -29,21 +17,13 @@ export default async function Page() {
         Dashboard
       </h1>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {/* <Card title="Collected" value={totalPaidInvoices} type="collected" />
-        <Card title="Pending" value={totalPendingInvoices} type="pending" />
-        <Card title="Total Invoices" value={numberOfInvoices} type="invoices" />
-        <Card
-          title="Total Customers"
-          value={numberOfCustomers}
-          type="customers"
-        /> */}
-
+        {/* suspense with card sceleton while card wrapper is loading */}
         <Suspense fallback={<CardSkeleton />}>
           <CardWrapper />
         </Suspense>
       </div>
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-        {/* <RevenueChart revenue={revenue}  /> */}
+        {/* suspense with revenue & latest invoice sceleton while the data is loading */}
         <Suspense fallback={<RevenueChartSkeleton />}>
           <RevenueChart />
         </Suspense>

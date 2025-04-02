@@ -20,7 +20,6 @@ export default async function RevenueChart() {
   // make component async, remove the props
   const revenue = await fetchRevenue(); // fetch data inside the component
   const chartHeight = 350;
-  // NOTE: Uncomment this code in Chapter 7
 
   const { yAxisLabels, topLabel } = generateYAxis(revenue);
 
