@@ -90,12 +90,13 @@ const ITEMS_PER_PAGE = 6;
 export async function fetchFilteredInvoices(
   query: string,
   currentPage: number
-) {
+) { // now looks like using prepared statement
   const dbClient = await client.connect();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    const invoices = await dbClient.query<InvoicesTable>(`
+    const invoices = await dbClient.query<InvoicesTable>(
+      `
       SELECT
         invoices.id,
         invoices.amount,
@@ -107,14 +108,16 @@ export async function fetchFilteredInvoices(
       FROM invoices
       JOIN customers ON invoices.customer_id = customers.id
       WHERE
-        customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`} OR
-        invoices.amount::text ILIKE ${`%${query}%`} OR
-        invoices.date::text ILIKE ${`%${query}%`} OR
-        invoices.status ILIKE ${`%${query}%`}
+        customers.name ILIKE $1 OR
+        customers.email ILIKE $1 OR
+        invoices.amount::text ILIKE $1 OR
+        invoices.date::text ILIKE $1 OR
+        invoices.status ILIKE $1
       ORDER BY invoices.date DESC
-      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
-    `);
+      LIMIT $2 OFFSET $3
+      `,
+      [`%${query}%`, ITEMS_PER_PAGE, offset] // Pass parameters safely
+    );
 
     return invoices.rows;
   } catch (error) {
@@ -124,6 +127,7 @@ export async function fetchFilteredInvoices(
     dbClient.release();
   }
 }
+
 
 export async function fetchInvoicesPages(query: string) {
   const dbClient = await client.connect();
