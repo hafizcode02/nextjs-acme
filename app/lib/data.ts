@@ -90,7 +90,7 @@ export async function fetchCardData() {
 
 const ITEMS_PER_PAGE = 6;
 export async function fetchFilteredInvoices(
-  query: string,
+  search: string,
   currentPage: number
 ) {
   // now looks like using prepared statement
@@ -119,7 +119,7 @@ export async function fetchFilteredInvoices(
       ORDER BY invoices.date DESC
       LIMIT $2 OFFSET $3
       `,
-      [`%${query}%`, ITEMS_PER_PAGE, offset] // Pass parameters safely
+      [`%${search}%`, ITEMS_PER_PAGE, offset] // Pass parameters safely
     );
 
     return invoices.rows;

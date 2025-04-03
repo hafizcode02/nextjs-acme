@@ -11,13 +11,13 @@ import { Suspense } from "react";
 
 export default async function Page(props: {
   searchParams?: Promise<{
-    query?: string;
+    search?: string;
     page?: string;
   }>;
 }) {
 
   const searchParams = await props.searchParams;
-  const query = searchParams?.query || "";
+  const query = searchParams?.search || "";
   const currentPage = parseInt(searchParams?.page || "1", 10);
   const totalPages = await fetchInvoicesPages(query)
 
@@ -31,7 +31,7 @@ export default async function Page(props: {
         <CreateInvoice />
       </div>
        <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
-        <InvoicesTable query={query} currentPage={currentPage} />
+        <InvoicesTable search={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
