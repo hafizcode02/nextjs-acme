@@ -6,43 +6,55 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function createInvoice(formData: FormData) {
-  const { customerId, amount, status } = createInvoiceSchema.parse({
-    customerId: formData.get("customerId"),
-    amount: formData.get("amount"),
-    status: formData.get("status"),
-  });
-  const amoutInCents = amount * 100;
-  const date = new Date().toISOString().split("T")[0];
+  try {
+    const { customerId, amount, status } = createInvoiceSchema.parse({
+      customerId: formData.get("customerId"),
+      amount: formData.get("amount"),
+      status: formData.get("status"),
+    });
+    const amoutInCents = amount * 100;
+    const date = new Date().toISOString().split("T")[0];
 
-  await query(
-    `INSERT INTO invoices (customer_id, amount, status, date) VALUES ($1, $2, $3, $4)`,
-    [customerId, amoutInCents, status, date]
-  );
-
+    await query(
+      `INSERT INTO invoices (customer_id, amount, status, date) VALUES ($1, $2, $3, $4)`,
+      [customerId, amoutInCents, status, date]
+    );
+  } catch (error) {
+    console.error("Error creating invoice:", error);
+    throw new Error("Failed to create invoice");
+  }
   revalidatePath("/dashboard/invoices");
   redirect("/dashboard/invoices");
 }
 
 export async function updateInvoice(invoicesId: string, formData: FormData) {
-  const { amount, status } = updateInvoiceSchema.parse({
-    amount: formData.get("amount"),
-    status: formData.get("status"),
-  });
+  try {
+    const { amount, status } = updateInvoiceSchema.parse({
+      amount: formData.get("amount"),
+      status: formData.get("status"),
+    });
 
-  const amoutInCents = amount ? amount * 100 : 0;
+    const amoutInCents = amount ? amount * 100 : 0;
 
-  await query(`UPDATE invoices SET amount = $1, status = $2 WHERE id = $3`, [
-    amoutInCents,
-    status,
-    invoicesId,
-  ]);
-
+    await query(`UPDATE invoices SET amount = $1, status = $2 WHERE id = $3`, [
+      amoutInCents,
+      status,
+      invoicesId,
+    ]);
+  } catch (error) {
+    console.error("Error updating invoice:", error);
+    throw new Error("Failed to update invoice");
+  }
   revalidatePath("/dashboard/invoices");
   redirect("/dashboard/invoices");
 }
 
 export async function deleteInvoice(invoicesId: string) {
-  await query(`DELETE FROM invoices WHERE id = $1`, [invoicesId]);
-
+  try {
+    await query(`SELECT * FROM invoices WHERE id = $1`, [invoicesId]);
+  } catch (error) {
+    console.error("Error deleting invoice:", error);
+    throw new Error("Failed to delete invoice");
+  }
   revalidatePath("/dashboard/invoices");
 }
