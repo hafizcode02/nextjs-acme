@@ -1,4 +1,4 @@
-import { date, z } from "zod";
+import { z } from "zod";
 
 export const createInvoiceSchema = z
   .object({
@@ -15,9 +15,11 @@ export const createInvoiceSchema = z
   .omit({ id: true, date: true })
   .strict();
 
-export const updateInvoiceSchema = z.object({
-  id: z.string(),
-  amount: z.coerce.number().optional(),
-  status: z.enum(["pending", "paid"]),
-}).omit({ id: true })
-.strict();
+export const updateInvoiceSchema = z
+  .object({
+    id: z.string(),
+    amount: z.coerce.number().optional(),
+    status: z.enum(["pending", "paid"]),
+  })
+  .omit({ id: true })
+  .strict();
