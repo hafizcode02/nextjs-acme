@@ -51,10 +51,12 @@ export async function updateInvoice(invoicesId: string, formData: FormData) {
 
 export async function deleteInvoice(invoicesId: string) {
   try {
-    await query(`SELECT * FROM invoices WHERE id = $1`, [invoicesId]);
+    await query(`DELETE FROM invoices WHERE id = $1`, [invoicesId]);
+    console.log("Invoice found, proceeding to delete.");
   } catch (error) {
     console.error("Error deleting invoice:", error);
     throw new Error("Failed to delete invoice");
   }
+
   revalidatePath("/dashboard/invoices");
 }
