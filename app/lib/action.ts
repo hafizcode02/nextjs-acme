@@ -14,6 +14,14 @@ export type State = {
   message?: string | null;
 };
 
+export type State2 = {
+  errors?: {
+    amount?: string[];
+    status?: string[];
+  };
+  message?: string | null;
+};
+
 export async function createInvoice(prevState: State, formData: FormData) {
   try {
     // Validate form using Zod schema
@@ -48,12 +56,25 @@ export async function createInvoice(prevState: State, formData: FormData) {
   redirect("/dashboard/invoices");
 }
 
-export async function updateInvoice(invoicesId: string, formData: FormData) {
+export async function updateInvoice(
+  invoicesId: string,
+  prevState: State2,
+  formData: FormData
+) {
   try {
-    const { amount, status } = updateInvoiceSchema.parse({
+    const validatedFields = updateInvoiceSchema.safeParse({
       amount: formData.get("amount"),
       status: formData.get("status"),
     });
+
+    if (!validatedFields.success) {
+      return {
+        errors: validatedFields.error.flatten().fieldErrors,
+        message: "Missing Fields. Failed to Update Invoice.",
+      };
+    }
+
+    const { amount, status } = validatedFields.data;
 
     const amoutInCents = amount ? amount * 100 : 0;
 
